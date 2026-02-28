@@ -21,7 +21,7 @@
 <body>
 
 <div class="container">
-    <h1>ステージ設営部材計算</h1>
+    <h1>ステージ設営部材計算 (図面準拠)</h1>
     
     <div class="input-row">
         <span class="label">間口:</span>
@@ -46,33 +46,30 @@
             <tr style="border-top: 2px solid #e67e22;"><td>パネル枚数</td><td id="res_panel">-</td></tr>
         </table>
     </div>
-    <p class="info">※1間=1800mm (900mmピッチ) で計算</p>
+    <p class="info">※1間=1800mm (パネル1800×900想定)</p>
 </div>
 
 <script>
     function calc() {
-        const m = parseFloat(document.getElementById('maguchi').value) || 0;
-        const o = parseFloat(document.getElementById('okuyuki').value) || 0;
+        const m = parseInt(document.getElementById('maguchi').value) || 0;
+        const o = parseInt(document.getElementById('okuyuki').value) || 0;
         
-        // 900mmピッチの数
-        const m_pitch = m * 2;
-        const o_pitch = o * 2;
-
-        // 支柱・ジャッキ
-        const posts = (m_pitch + 1) * (o_pitch + 1);
+        // 支柱・ジャッキ：間口は1間ごと(m+1)、奥行は0.5間ごと(o*2+1)
+        const posts = (m + 1) * (o * 2 + 1);
         
-        // パネル (1800x900想定で、5間x3間なら10x6の計60枚...ではなく図面通り30枚かな？)
-        // 図面(5x3)で30枚なので、1間x0.5間のパネルと判断
-        const panels = m * (o * 2);
+        // パネル：1間に2枚（1800x900）
+        const panels = m * o * 2;
 
-        // 手すり (格子状にすべて配置する計算)
-        const h900 = (m_pitch + 1) * o_pitch;
-        const h1800 = (o_pitch + 1) * m;
+        // 手すり 900：奥行方向のライン数(o*2) × 支柱列数(m+1)
+        const h900 = (m + 1) * (o * 2);
 
-        // プレート
+        // 手すり 1800：間口方向の枚数(m) × 支柱行数(o*2+1)
+        const h1800 = m * (o * 2 + 1);
+
+        // プレート分類
         const p_corner = 4;
-        const p_edge = (m_pitch - 1) * 2 + (o_pitch - 1) * 2;
-        const p_mid = (m_pitch - 1) * (o_pitch - 1);
+        const p_edge = ((m - 1) * 2) + ((o * 2 - 1) * 2);
+        const p_mid = (m - 1) * (o * 2 - 1);
 
         document.getElementById('res_jack').innerText = posts + " 本";
         document.getElementById('res_post').innerText = posts + " 本";
