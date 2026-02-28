@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ステージ設営計算</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 15px; background-color: #ecf0f1; color: #2c3e50; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
+        h1 { font-size: 1.3rem; border-left: 5px solid #e67e22; padding-left: 10px; margin-bottom: 20px; }
+        .input-row { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
+        input { flex: 1; padding: 12px; font-size: 1.1rem; border: 2px solid #bdc3c7; border-radius: 6px; }
+        .label { width: 50px; font-weight: bold; }
+        .result-box { margin-top: 20px; background: #fdf2e9; padding: 15px; border-radius: 8px; border: 1px solid #e67e22; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td { padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 1rem; }
+        td:last-child { text-align: right; font-weight: bold; color: #d35400; font-size: 1.2rem; }
+        .info { font-size: 0.8rem; color: #7f8c8d; margin-top: 15px; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>ステージ設営部材計算</h1>
+    
+    <div class="input-row">
+        <span class="label">間口:</span>
+        <input type="number" id="maguchi" value="5" oninput="calc()">
+        <span>間</span>
+    </div>
+    <div class="input-row">
+        <span class="label">奥行:</span>
+        <input type="number" id="okuyuki" value="3" oninput="calc()">
+        <span>間</span>
+    </div>
+
+    <div class="result-box">
+        <table>
+            <tr><td>ジャッキベース</td><td id="res_jack">-</td></tr>
+            <tr><td>支柱</td><td id="res_post">-</td></tr>
+            <tr><td>手すり 900</td><td id="res_h900">-</td></tr>
+            <tr><td>手すり 1800</td><td id="res_h1800">-</td></tr>
+            <tr><td>プレート（角部）</td><td id="res_p_corner">-</td></tr>
+            <tr><td>プレート（端部）</td><td id="res_p_edge">-</td></tr>
+            <tr><td>プレート（中部）</td><td id="res_p_mid">-</td></tr>
+            <tr style="border-top: 2px solid #e67e22;"><td>パネル枚数</td><td id="res_panel">-</td></tr>
+        </table>
+    </div>
+    <p class="info">※1間=1800mm (900mmピッチ) で計算</p>
+</div>
+
+<script>
+    function calc() {
+        const m = parseFloat(document.getElementById('maguchi').value) || 0;
+        const o = parseFloat(document.getElementById('okuyuki').value) || 0;
+        
+        // 900mmピッチの数
+        const m_pitch = m * 2;
+        const o_pitch = o * 2;
+
+        // 支柱・ジャッキ
+        const posts = (m_pitch + 1) * (o_pitch + 1);
+        
+        // パネル (1800x900想定で、5間x3間なら10x6の計60枚...ではなく図面通り30枚かな？)
+        // 図面(5x3)で30枚なので、1間x0.5間のパネルと判断
+        const panels = m * (o * 2);
+
+        // 手すり (格子状にすべて配置する計算)
+        const h900 = (m_pitch + 1) * o_pitch;
+        const h1800 = (o_pitch + 1) * m;
+
+        // プレート
+        const p_corner = 4;
+        const p_edge = (m_pitch - 1) * 2 + (o_pitch - 1) * 2;
+        const p_mid = (m_pitch - 1) * (o_pitch - 1);
+
+        document.getElementById('res_jack').innerText = posts + " 本";
+        document.getElementById('res_post').innerText = posts + " 本";
+        document.getElementById('res_h900').innerText = h900 + " 本";
+        document.getElementById('res_h1800').innerText = h1800 + " 本";
+        document.getElementById('res_p_corner').innerText = p_corner + " 個";
+        document.getElementById('res_p_edge').innerText = p_edge + " 個";
+        document.getElementById('res_p_mid').innerText = p_mid + " 個";
+        document.getElementById('res_panel').innerText = panels + " 枚";
+    }
+    window.onload = calc;
+</script>
+
+</body>
+</html>
