@@ -3,96 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>西暦・和暦 爆速変換ツール</title>
+    <title>現場ツール・ポータル</title>
     <style>
         body { 
             font-family: sans-serif; 
-            text-align: center; 
             margin: 0; 
             padding: 20px; 
-            background-color: #f0f8ff; 
-            color: #333;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        h1 { font-size: 1.5rem; margin-bottom: 10px; color: #007bff; }
-        p { font-size: 0.9rem; color: #666; margin-bottom: 20px; }
-        
-        /* 入力欄とボタンをスマホで押しやすいサイズに */
-        input { 
-            width: 80%; 
-            padding: 15px; 
-            font-size: 1.2rem; 
-            margin-bottom: 15px; 
-            border-radius: 8px; 
-            border: 2px solid #ddd;
-            box-sizing: border-box;
-        }
-        button { 
-            width: 80%; 
-            padding: 15px; 
-            font-size: 1.2rem; 
-            background-color: #007bff; 
+            background-color: #2c3e50; 
             color: white; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer;
-            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 左右の中央揃え */
         }
-        button:active { background-color: #0056b3; transform: scale(0.98); }
-        
-        /* 結果表示を大きく目立たせる */
-        #result { 
-            font-size: 1.6rem; 
-            font-weight: bold; 
-            color: #d32f2f; 
-            margin-top: 30px; 
-            min-height: 1.6em;
-            line-height: 1.4;
+        .container { 
+            width: 100%;
+            max-width: 350px; /* 画面が大きくても広がりすぎないように制限 */
+            margin-top: 50px;
+            box-sizing: border-box; /* これではみ出しを防ぎます */
+        }
+        h1 { font-size: 1.6rem; margin-bottom: 30px; text-align: center; }
+        .menu-button {
+            display: block;
+            width: 100%; /* containerの幅いっぱいに広がる */
+            padding: 20px 0; /* 上下だけ余白、左右は0にして中央寄せを維持 */
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            text-align: center;
+            box-sizing: border-box; /* パディングを含めて100%に収める魔法 */
+            transition: transform 0.2s;
+        }
+        .btn-blue { background-color: #3498db; }
+        .btn-green { background-color: #27ae60; }
+        .menu-button:active { transform: scale(0.95); }
+        .footer { 
+            margin-top: 40px;
+            font-size: 0.8rem; 
+            opacity: 0.7; 
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>西暦 ➡ 和暦 変換</h1>
-    <p>西暦を入力して「変換」をタップ</p>
+    <h1>現場専用ツール箱</h1>
     
-    <input type="number" id="yearInput" placeholder="例: 2026" min="1926">
-    <br>
-    <button onclick="convertYear()">変換する</button>
-    
-    <div id="result"></div>
+    <a href="wareki.html" class="menu-button btn-blue">📅 西暦 ➡ 和暦 変換</a>
+    <a href="unit.html" class="menu-button btn-green">📐 現場用 単位変換</a>
+
+    <div class="footer">
+        2級建築施工管理技士 監修ツール
+    </div>
 </div>
-
-<script>
-    function convertYear() {
-        const input = document.getElementById('yearInput').value;
-        const year = parseInt(input);
-        const resultDiv = document.getElementById('result');
-        let result = "";
-
-        if (isNaN(year) || year < 1926) {
-            result = "1926年以降を<br>入力してください";
-        } else if (year >= 2019) {
-            const reiwa = year - 2018;
-            result = `令和 ${reiwa === 1 ? '元' : reiwa} 年`;
-        } else if (year >= 1989) {
-            const heisei = year - 1988;
-            result = `平成 ${heisei === 1 ? '元' : heisei} 年`;
-        } else {
-            const showa = year - 1925;
-            result = `昭和 ${showa === 1 ? '元' : showa} 年`;
-        }
-        resultDiv.innerHTML = result;
-    }
-</script>
 
 </body>
 </html>
