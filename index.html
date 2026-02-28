@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>西暦・和暦 爆速変換ツール</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f0f8ff; }
+        input, button { padding: 10px; font-size: 16px; margin: 10px; border-radius: 5px; border: 1px solid #ccc; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
+        button:hover { background-color: #0056b3; }
+        #result { font-size: 24px; font-weight: bold; color: #333; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>西暦 ➡ 和暦 変換ツール</h1>
+    <p>西暦を入力して「変換」を押してください（昭和以降に対応）</p>
+    <input type="number" id="yearInput" placeholder="例: 2026" min="1926">
+    <button onclick="convertYear()">変換</button>
+    <div id="result"></div>
+
+    <script>
+        function convertYear() {
+            const input = document.getElementById('yearInput').value;
+            const year = parseInt(input);
+            const resultDiv = document.getElementById('result');
+            let result = "";
+
+            if (isNaN(year) || year < 1926) {
+                result = "1926年以降を入力してください";
+            } else if (year >= 2019) {
+                const reiwa = year - 2018;
+                result = `西暦${year}年は、令和 ${reiwa === 1 ? '元' : reiwa} 年です`;
+            } else if (year >= 1989) {
+                const heisei = year - 1988;
+                result = `西暦${year}年は、平成 ${heisei === 1 ? '元' : heisei} 年です`;
+            } else {
+                const showa = year - 1925;
+                result = `西暦${year}年は、昭和 ${showa === 1 ? '元' : showa} 年です`;
+            }
+            resultDiv.innerText = result;
+        }
+    </script>
+</body>
+</html>
