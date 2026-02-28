@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>現場用・単位変換ツール</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.5rem; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .section { margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 8px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; color: #3498db; display: block; }
+        .input-group { display: flex; align-items: center; margin-bottom: 10px; }
+        input { flex: 1; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 4px; outline: none; }
+        span { margin-left: 10px; width: 40px; font-weight: bold; }
+        .info { font-size: 0.8rem; color: #7f8c8d; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>現場用・単位変換</h1>
+
+    <div class="section">
+        <span class="section-title">📏 長さ (m ⇄ 尺・寸)</span>
+        <div class="input-group">
+            <input type="number" id="mInput" placeholder="0.000" oninput="fromM()">
+            <span>m</span>
+        </div>
+        <div class="input-group">
+            <input type="number" id="shakuInput" placeholder="0.00" oninput="fromShaku()">
+            <span>尺</span>
+        </div>
+        <div class="input-group">
+            <input type="number" id="sunInput" placeholder="0.00" oninput="fromSun()">
+            <span>寸</span>
+        </div>
+        <p class="info">※ 1尺 = 10/33m (約303.03mm) で計算</p>
+    </div>
+
+    <div class="section">
+        <span class="section-title">📐 面積 (㎡ ⇄ 坪)</span>
+        <div class="input-group">
+            <input type="number" id="sqmInput" placeholder="0.00" oninput="fromSqm()">
+            <span>㎡</span>
+        </div>
+        <div class="input-group">
+            <input type="number" id="tsuboInput" placeholder="0.00" oninput="fromTsubo()">
+            <span>坪</span>
+        </div>
+        <p class="info">※ 1坪 = 3.305785㎡ で計算</p>
+    </div>
+</div>
+
+<script>
+    // 長さ計算
+    const M_TO_SHAKU = 3.3;
+    const SHAKU_TO_SUN = 10;
+
+    function fromM() {
+        const m = document.getElementById('mInput').value;
+        if(!m) return clearLength();
+        document.getElementById('shakuInput').value = (m * M_TO_SHAKU).toFixed(3);
+        document.getElementById('sunInput').value = (m * M_TO_SHAKU * SHAKU_TO_SUN).toFixed(2);
+    }
+
+    function fromShaku() {
+        const shaku = document.getElementById('shakuInput').value;
+        if(!shaku) return clearLength();
+        document.getElementById('mInput').value = (shaku / M_TO_SHAKU).toFixed(3);
+        document.getElementById('sunInput').value = (shaku * SHAKU_TO_SUN).toFixed(2);
+    }
+
+    function fromSun() {
+        const sun = document.getElementById('sunInput').value;
+        if(!sun) return clearLength();
+        document.getElementById('shakuInput').value = (sun / SHAKU_TO_SUN).toFixed(3);
+        document.getElementById('mInput').value = (sun / (M_TO_SHAKU * SHAKU_TO_SUN)).toFixed(3);
+    }
+
+    function clearLength() {
+        document.getElementById('mInput').value = "";
+        document.getElementById('shakuInput').value = "";
+        document.getElementById('sunInput').value = "";
+    }
+
+    // 面積計算
+    const TSUBOM2 = 3.305785;
+
+    function fromSqm() {
+        const sqm = document.getElementById('sqmInput').value;
+        document.getElementById('tsuboInput').value = sqm ? (sqm / TSUBOM2).toFixed(3) : "";
+    }
+
+    function fromTsubo() {
+        const tsubo = document.getElementById('tsuboInput').value;
+        document.getElementById('sqmInput').value = tsubo ? (tsubo * TSUBOM2).toFixed(3) : "";
+    }
+</script>
+
+</body>
+</html>
