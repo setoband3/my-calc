@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>現場用・単位変換ツール</title>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { font-size: 1.5rem; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
-        .section { margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 8px; }
-        .section-title { font-weight: bold; margin-bottom: 10px; color: #3498db; display: block; }
-        .input-group { display: flex; align-items: center; margin-bottom: 10px; }
-        input { flex: 1; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 4px; outline: none; }
-        span { margin-left: 10px; width: 40px; font-weight: bold; }
-        .info { font-size: 0.8rem; color: #7f8c8d; margin-top: 5px; }
+        body { font-family: sans-serif; margin: 0; padding: 15px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.3rem; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px; margin-bottom: 15px; }
+        .section { margin-bottom: 20px; padding: 12px; border: 1px solid #eee; border-radius: 8px; }
+        /* 見出しが折り返さないように修正 */
+        .section-title { font-weight: bold; margin-bottom: 12px; color: #3498db; display: block; white-space: nowrap; font-size: 0.95rem; }
+        .input-group { display: flex; align-items: center; margin-bottom: 8px; }
+        input { flex: 1; padding: 12px; font-size: 1rem; border: 1px solid #ddd; border-radius: 4px; outline: none; min-width: 0; }
+        /* 単位ラベルも折り返さない */
+        span.unit { margin-left: 8px; width: 45px; font-weight: bold; white-space: nowrap; font-size: 0.9rem; }
+        .info { font-size: 0.75rem; color: #7f8c8d; margin-top: 5px; line-height: 1.4; }
     </style>
 </head>
 <body>
@@ -22,38 +24,37 @@
     <h1>現場用・単位変換</h1>
 
     <div class="section">
-        <span class="section-title">📏 長さ (m ⇄ 尺・寸)</span>
+        <span class="section-title">📏 長さ (m / 尺 / 寸)</span>
         <div class="input-group">
             <input type="number" id="mInput" placeholder="0.000" oninput="fromM()">
-            <span>m</span>
+            <span class="unit">m</span>
         </div>
         <div class="input-group">
             <input type="number" id="shakuInput" placeholder="0.00" oninput="fromShaku()">
-            <span>尺</span>
+            <span class="unit">尺</span>
         </div>
         <div class="input-group">
             <input type="number" id="sunInput" placeholder="0.00" oninput="fromSun()">
-            <span>寸</span>
+            <span class="unit">寸</span>
         </div>
-        <p class="info">※ 1尺 = 10/33m (約303.03mm) で計算</p>
+        <p class="info">※ 1尺 = 約303.03mm</p>
     </div>
 
     <div class="section">
-        <span class="section-title">📐 面積 (㎡ ⇄ 坪)</span>
+        <span class="section-title">📐 面積 (㎡ / 坪)</span>
         <div class="input-group">
             <input type="number" id="sqmInput" placeholder="0.00" oninput="fromSqm()">
-            <span>㎡</span>
+            <span class="unit">㎡</span>
         </div>
         <div class="input-group">
             <input type="number" id="tsuboInput" placeholder="0.00" oninput="fromTsubo()">
-            <span>坪</span>
+            <span class="unit">坪</span>
         </div>
-        <p class="info">※ 1坪 = 3.305785㎡ で計算</p>
+        <p class="info">※ 1坪 = 3.305785㎡</p>
     </div>
 </div>
 
 <script>
-    // 長さ計算
     const M_TO_SHAKU = 3.3;
     const SHAKU_TO_SUN = 10;
 
@@ -84,14 +85,11 @@
         document.getElementById('sunInput').value = "";
     }
 
-    // 面積計算
     const TSUBOM2 = 3.305785;
-
     function fromSqm() {
         const sqm = document.getElementById('sqmInput').value;
         document.getElementById('tsuboInput').value = sqm ? (sqm / TSUBOM2).toFixed(3) : "";
     }
-
     function fromTsubo() {
         const tsubo = document.getElementById('tsuboInput').value;
         document.getElementById('sqmInput').value = tsubo ? (tsubo * TSUBOM2).toFixed(3) : "";
