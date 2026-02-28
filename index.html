@@ -2,40 +2,74 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>現場ツール・ポータル</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>現場ツール</title>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 20px; background-color: #2c3e50; color: white; text-align: center; }
-        .container { max-width: 400px; margin: 50px auto 0; }
-        h1 { font-size: 1.8rem; margin-bottom: 30px; }
+        /* 画面全体の設定 */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            overflow-x: hidden; /* 横スクロールを禁止 */
+            background-color: #2c3e50;
+            font-family: sans-serif;
+        }
+        
+        /* 中央に寄せるための箱 */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100vw; /* 画面の幅ぴったり */
+            padding-top: 40px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        /* ボタンの設定：ここが重要 */
         .menu-button {
             display: block;
-            width: 100%;
-            padding: 25px;
+            width: 85%; /* 画面の85%の幅に固定 */
+            max-width: 300px; /* 大きなスマホでも広がりすぎない */
+            padding: 20px 0;
             margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: white;
+            text-align: center;
             text-decoration: none;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
             border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            /* はみ出し防止の魔法 */
+            box-sizing: border-box; 
         }
+
         .btn-blue { background-color: #3498db; }
         .btn-green { background-color: #27ae60; }
-        .menu-button:active { transform: scale(0.95); }
-        p { font-size: 0.9rem; opacity: 0.7; margin-top: 50px; }
+        
+        .footer {
+            color: white;
+            opacity: 0.6;
+            font-size: 0.8rem;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="wrapper">
     <h1>現場専用ツール箱</h1>
     
-    <a href="index.html" class="menu-button btn-blue">📅 西暦 ➡ 和暦 変換</a>
-    <a href="unit.html" class="menu-button btn-green">📐 現場用 単位変換</a>
+    <a href="wareki.html" class="menu-button btn-blue">📅 西暦 ➡ 和暦</a>
+    <a href="unit.html" class="menu-button btn-green">📐 単位変換</a>
 
-    <p>2級建築施工管理技士 監修ツール</p>
+    <div class="footer">
+        2級建築施工管理技士 監修
+    </div>
 </div>
 
 </body>
