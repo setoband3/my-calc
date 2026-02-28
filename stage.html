@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ステージ設営計算</title>
+    <title>ステージ設営計算・集積表</title>
     <style>
         body { font-family: sans-serif; margin: 0; padding: 15px; background-color: #ecf0f1; color: #2c3e50; }
         .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; }
@@ -11,17 +11,34 @@
         .input-row { display: flex; align-items: center; margin-bottom: 15px; gap: 10px; }
         input { flex: 1; padding: 12px; font-size: 1.1rem; border: 2px solid #bdc3c7; border-radius: 6px; }
         .label { width: 50px; font-weight: bold; }
-        .result-box { margin-top: 20px; background: #fdf2e9; padding: 15px; border-radius: 8px; border: 1px solid #e67e22; }
+        .result-box { margin-top: 20px; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e67e22; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td { padding: 8px 0; border-bottom: 1px solid #ddd; font-size: 1rem; }
+        td { padding: 10px 0; border-bottom: 1px solid #ddd; font-size: 1rem; }
         td:last-child { text-align: right; font-weight: bold; color: #d35400; font-size: 1.2rem; }
+        
+        /* 出力ボタンのスタイル */
+        .export-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #219150;
+        }
+        .export-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #219150; }
         .info { font-size: 0.8rem; color: #7f8c8d; margin-top: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>ステージ設営部材計算 (図面準拠)</h1>
+    <h1>ステージ部材計算・集積</h1>
     
     <div class="input-row">
         <span class="label">間口:</span>
@@ -34,7 +51,7 @@
         <span>間</span>
     </div>
 
-    <div class="result-box">
+    <div class="result-box" id="resultTable">
         <table>
             <tr><td>ジャッキベース</td><td id="res_jack">-</td></tr>
             <tr><td>支柱</td><td id="res_post">-</td></tr>
@@ -46,40 +63,79 @@
             <tr style="border-top: 2px solid #e67e22;"><td>パネル枚数</td><td id="res_panel">-</td></tr>
         </table>
     </div>
-    <p class="info">※1間=1800mm (パネル1800×900想定)</p>
+
+    <button class="export-btn" onclick="exportToExcel()">Excel用データを出力</button>
+    
+    <p class="info">※ダウンロードしたファイルはExcelで開けます</p>
 </div>
 
 <script>
+    let results = {};
+
     function calc() {
         const m = parseInt(document.getElementById('maguchi').value) || 0;
         const o = parseInt(document.getElementById('okuyuki').value) || 0;
         
-        // 支柱・ジャッキ：間口は1間ごと(m+1)、奥行は0.5間ごと(o*2+1)
         const posts = (m + 1) * (o * 2 + 1);
-        
-        // パネル：1間に2枚（1800x900）
         const panels = m * o * 2;
-
-        // 手すり 900：奥行方向のライン数(o*2) × 支柱列数(m+1)
         const h900 = (m + 1) * (o * 2);
-
-        // 手すり 1800：間口方向の枚数(m) × 支柱行数(o*2+1)
         const h1800 = m * (o * 2 + 1);
-
-        // プレート分類
         const p_corner = 4;
         const p_edge = ((m - 1) * 2) + ((o * 2 - 1) * 2);
         const p_mid = (m - 1) * (o * 2 - 1);
 
-        document.getElementById('res_jack').innerText = posts + " 本";
-        document.getElementById('res_post').innerText = posts + " 本";
-        document.getElementById('res_h900').innerText = h900 + " 本";
-        document.getElementById('res_h1800').innerText = h1800 + " 本";
-        document.getElementById('res_p_corner').innerText = p_corner + " 個";
-        document.getElementById('res_p_edge').innerText = p_edge + " 個";
-        document.getElementById('res_p_mid').innerText = p_mid + " 個";
-        document.getElementById('res_panel').innerText = panels + " 枚";
+        results = {
+            "ジャッキベース": posts,
+            "支柱": posts,
+            "手すり 900": h900,
+            "手すり 1800": h1800,
+            "プレート（角部）": p_corner,
+            "プレート（端部）": p_edge,
+            "プレート（中部）": p_mid,
+            "パネル": panels
+        };
+
+        for (let key in results) {
+            const id = "res_" + (key.includes('手すり 900') ? 'h900' : 
+                                  key.includes('手すり 1800') ? 'h1800' : 
+                                  key.includes('角部') ? 'p_corner' : 
+                                  key.includes('端部') ? 'p_edge' : 
+                                  key.includes('中部') ? 'p_mid' : 
+                                  key.includes('ジャッキ') ? 'jack' : 
+                                  key.includes('支柱') ? 'post' : 'panel');
+            document.getElementById(id).innerText = results[key] + (key === 'パネル' ? " 枚" : (key.includes('プレート') ? " 個" : " 本"));
+        }
     }
+
+    function exportToExcel() {
+        const m = document.getElementById('maguchi').value;
+        const o = document.getElementById('okuyuki').value;
+        const now = new Date();
+        const dateStr = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+        
+        // CSVデータの作成（BOM付きでExcelの文字化け防止）
+        let csvContent = "\ufeff";
+        csvContent += `ステージ設営部材リスト,作成日時:,${dateStr}\n`;
+        csvContent += `条件:,間口 ${m}間 / 奥行 ${o}間\n\n`;
+        csvContent += "部材名,数量,単位,チェック欄(済)\n";
+
+        for (let key in results) {
+            let unit = key === 'パネル' ? "枚" : (key.includes('プレート') ? "個" : "本");
+            csvContent += `${key},${results[key]},${unit},\n`;
+        }
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute("href", url);
+        link.setAttribute("download", `stage_list_${m}x${o}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     window.onload = calc;
 </script>
 
